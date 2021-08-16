@@ -243,7 +243,41 @@ install_essential(){
     echo && echo "Press any key to continue..."; read empty
 }
 
-## START
+# ADD USER ACCT
+add_user(){
+    clear
+    echo && echo "Adding sudo + user acct..."
+    sleep 2
+    arch-chroot /mnt pacman -S sudo bash-completion sshpass
+    arch-chroot /mnt sed -i 's/# %wheel/%wheel/g' /etc/sudoers
+    arch-chroot /mnt sed -i 's/%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers
+    echo && echo "Please provide a username: "; read sudo_user
+    echo && echo "Creating $sudo_user and adding $sudo_user to sudoers..."
+    arch-chroot /mnt useradd -m -G wheel "$sudo_user"
+    echo && echo "Password for $sudo_user?"
+    arch-chroot /mnt passwd "$sudo_user"
+}
+
+# INSTALL GRUB
+install_grub(){
+    clear
+    echo "Installing grub..." && sleep 4
+    arch-chroot /mnt pacman -S grub os-prober
+
+    ## We're not checking for EFI; We're assuming MBR
+    arch-chroot /mnt grub-install "$IN_DEVICE"
+
+    echo "configuring /boot/grub/grub.cfg..."
+    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    [[ "$?" -eq 0 ]] && echo "mbr bootloader installed..."
+
+    echo "Your system is installed.  Type shutdown -h now to shutdown system and remove bootable media, then restart"
+    read empty
+}
+
+
+
+## START INSTALLATION
 
 part_drive
 crypt_setup
@@ -255,3 +289,5 @@ gen_tz_locale
 do_hostname
 set_root_pw
 install_essential
+add_user
+install_grub
