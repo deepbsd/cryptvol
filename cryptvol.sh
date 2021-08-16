@@ -30,6 +30,7 @@ FILESYSTEM=ext4
 
 use_bcm4360(){ return 1; }  # return 0 for "truthy" and 1 for "falsy"
 
+# DO WE NEED BROADCOM DRIVERS?
 if $(use_bcm4360) ; then
     WIRELESSDRIVERS="broadcom-wl-dkms"
 else
@@ -155,6 +156,19 @@ check_ready(){
     sleep 4
 }
 
+install_base(){
+    ###  Install base system
+    clear
+    echo && echo "Press any key to continue to install BASE SYSTEM..."; read empty
+    pacstrap /mnt "${BASE_SYSTEM[@]}"
+    echo && echo "Base system installed.  Press any key to continue..."; read empty
+
+    # GENERATE FSTAB
+    echo "Generating fstab..."
+    genfstab -U /mnt >> /mnt/etc/fstab
+    cat /mnt/etc/fstab
+    echo && echo "Here's your fstab. Type any key to continue..."; read empty
+}
 
 ## START
 
@@ -162,4 +176,5 @@ part_drive
 crypt_setup
 prepare_vols
 check_ready
+install_base
 
