@@ -287,12 +287,18 @@ install_grub(){
     echo "Installing grub..." && sleep 4
     arch-chroot /mnt pacman -S grub os-prober
 
-    ## We're not checking for EFI; We're assuming MBR
-    arch-chroot /mnt grub-install "$IN_DEVICE"
+    if $(efi_boot_mode) ; then
+        arch-chroot /mnt pacman -S efibootmgr
+        
+        [[ ! -d /mnt/boot/efi ]] && error "Grub Install: no /mnt/boot/efi directory!!!" 
+        arch-chroot /mnt grub-install "$IN_DEVICE" --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi
 
-    echo "configuring /boot/grub/grub.cfg..."
-    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-    [[ "$?" -eq 0 ]] && echo "mbr bootloader installed..."
+        ## This next bit is for Ryzen systems with weird BIOS/EFI issues; --no-nvram and --removable might help
+        [[ $? != 0 ]] && arch-chroot /mnt grub-install \
+           "$IN_DEVICE" --target=x86_64-efi --bootloader-id=GRUB \
+           --efi-directory=/boot/efi --no-nvram --removable
+        echo -e "\n\nefi grub bootloader installed..."
+    fi
 
     echo "Your system is installed.  Type shutdown -h now to shutdown system and remove bootable media, then restart"
     read empty
