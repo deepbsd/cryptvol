@@ -201,6 +201,47 @@ gen_tz_locale(){
 }
 
 
+# GENERATE HOSTNAME CONFIG
+do_hostname(){
+    ## HOSTNAME
+    clear
+    echo && echo "Setting hostname..."; sleep 3
+    echo "$HOSTNAME" > /mnt/etc/hostname
+
+    cat > /mnt/etc/hosts <<HOSTS
+127.0.0.1      localhost
+::1            localhost
+127.0.1.1      $HOSTNAME.localdomain     $HOSTNAME
+HOSTS
+
+    echo && echo "/etc/hostname and /etc/hosts files configured..."
+    echo "/etc/hostname . . . "
+    cat /mnt/etc/hostname 
+    echo "/etc/hosts . . ."
+    cat /mnt/etc/hosts
+    echo && echo "Here are /etc/hostname and /etc/hosts. Type any key to continue "; read empty
+}
+
+# SET ROOT PASSWORD
+set_root_pw(){
+    ## SET ROOT PASSWD
+    clear
+    echo "Setting ROOT password..."
+    arch-chroot /mnt passwd
+}
+
+# MORE INSTALLATION
+install_essential(){
+    ## INSTALLING MORE ESSENTIALS
+    clear
+    echo && echo "Enabling dhcpcd, pambase, sshd and NetworkManager services..." && echo
+    arch-chroot /mnt pacman -S git openssh networkmanager dhcpcd man-db man-pages pambase
+    arch-chroot /mnt systemctl enable dhcpcd.service
+    arch-chroot /mnt systemctl enable sshd.service
+    arch-chroot /mnt systemctl enable NetworkManager.service
+    arch-chroot /mnt systemctl enable systemd-homed
+    echo && echo "Press any key to continue..."; read empty
+}
 
 ## START
 
@@ -210,4 +251,7 @@ prepare_vols
 check_ready
 install_base
 gen_fstab
-
+gen_tz_locale
+do_hostname
+set_root_pw
+install_essential
