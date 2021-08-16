@@ -59,6 +59,7 @@ efi_boot_mode(){
 # All purpose error
 error(){ echo "Error: $1" && exit 1; }
 
+# PARTITION DRIVE
 part_drive(){
     ## PARTITION DRIVE
     parted -s "$DRIVE" mklabel gpt
@@ -79,6 +80,7 @@ part_drive(){
     read -p "Here're your partitions... Hit enter to continue..." empty
 }
 
+# SETUP ENCRYPTION ON VOLUME
 crypt_setup(){
     # Get passphrase
     read -p "What is the passphrase?" passph
@@ -97,6 +99,7 @@ crypt_setup(){
     cryptsetup -v status "${DRIVE}2"    
 }
 
+# PREPARE PHYSICAL AND LOGICAL VOLUMES AND MOUNT
 prepare_vols(){
     # CREATE PHYSICAL VOL
     pvcreate /dev/mapper/"$CRYPTVOL"
@@ -128,9 +131,35 @@ prepare_vols(){
     lsblk
 }
 
+# CHECK FOR MIRRORLIST AND INTERNET CONN
+check_ready(){
+    ### Check of reflector is done
+    clear
+    echo "Waiting until reflector has finished updating mirrorlist..."
+    while true; do
+        pgrep -x reflector &>/dev/null || break
+        echo -n '.'
+        sleep 2
+    done
+
+    ### Test internet connection
+    clear
+    echo "Testing internet connection..."
+    $(ping -c 3 archlinux.org &>/dev/null) || (echo "Not Connected to Network!!!" && exit 1)
+    echo "Good!  We're connected!!!" && sleep 3
+
+    ## Check time and date before installation
+    timedatectl set-ntp true
+    echo && echo "Date/Time service Status is . . . "
+    timedatectl status
+    sleep 4
+}
+
 
 ## START
 
 part_drive
 crypt_setup
 prepare_vols
+check_ready
+
