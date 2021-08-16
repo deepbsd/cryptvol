@@ -156,8 +156,8 @@ check_ready(){
     sleep 4
 }
 
+# INSTALL BASE SYSTEM 
 install_base(){
-    ###  Install base system
     clear
     echo && echo "Press any key to continue to install BASE SYSTEM..."; read empty
     pacstrap /mnt "${BASE_SYSTEM[@]}"
@@ -170,6 +170,38 @@ install_base(){
     echo && echo "Here's your fstab. Type any key to continue..."; read empty
 }
 
+# GENERATE FSTAB 
+gen_fstab(){
+    # GENERATE FSTAB
+    echo "Generating fstab..."
+    genfstab -U /mnt >> /mnt/etc/fstab
+    cat /mnt/etc/fstab
+    echo && echo "Here's your fstab. Type any key to continue..."; read empty
+}
+
+# GENERATE TZ AND LOCALE
+gen_tz_locale(){
+    ## SET UP TIMEZONE AND LOCALE
+    clear
+    echo && echo "setting timezone to $TIME_ZONE..."
+    arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime
+    arch-chroot /mnt hwclock --systohc --utc
+    arch-chroot /mnt date
+    echo && echo "Here's the date info, hit any key to continue..."; read empty
+
+    ## SET UP LOCALE
+    clear
+    echo && echo "setting locale to $LOCALE ..."
+    arch-chroot /mnt sed -i "s/#$LOCALE/$LOCALE/g" /etc/locale.gen
+    arch-chroot /mnt locale-gen
+    echo "LANG=$LOCALE" > /mnt/etc/locale.conf
+    export LANG="$LOCALE"
+    cat /mnt/etc/locale.conf
+    echo && echo "Here's your /mnt/etc/locale.conf. Type any key to continue."; read empty
+}
+
+
+
 ## START
 
 part_drive
@@ -177,4 +209,5 @@ crypt_setup
 prepare_vols
 check_ready
 install_base
+gen_fstab
 
