@@ -10,6 +10,7 @@
 HOSTNAME="effie"
 
 DRIVE=/dev/sda
+#DRIVE=/dev/nvme0n0
 
 PART_START="537MB"
 PART_END="32.2GB"
@@ -25,10 +26,14 @@ HOMESIZE=""
 
 TIME_ZONE="America/New_York"
 LOCALE="en_US.UTF-8"
-#KEYBOARD="us"    # change if you need to
 FILESYSTEM=ext4
+default_keymap='us'             # set to your keymap name
+#KEYBOARD="us"    # change if you need to
 
+use_lvm(){ return 0; }       # return 0 if you want lvm
+use_crypt(){ return 0; }     # return 0 if you want crypt 
 use_bcm4360(){ return 1; }  # return 0 for "truthy" and 1 for "falsy"
+use_nonus_keymap(){ return 1; } # return 0 if using non-US keyboard keymap (default)
 
 # DO WE NEED BROADCOM DRIVERS?
 if $(use_bcm4360) ; then
