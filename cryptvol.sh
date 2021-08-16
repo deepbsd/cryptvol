@@ -161,6 +161,24 @@ check_ready(){
     sleep 4
 }
 
+# PART OF LVM INSTALLATION
+lvm_hooks(){
+    clear
+    echo "adding lvm2 to mkinitcpio hooks HOOKS=( base udev ... block lvm2 filesystems )"
+    sleep 4
+    sed -i 's/^HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)$/HOOKS=(base udev autodetect modconf block lvm2 filesystems keyboard fsck)/g' /mnt/etc/mkinitcpio.conf
+    arch-chroot /mnt mkinitcpio -P
+    echo "Press any key to continue..."; read empty
+}
+
+# INSERT LVM MODULES
+lvm_modules(){
+    # insert the vol group module
+    modprobe dm_mod
+    # activate the vol group
+    vgchange -ay
+}
+
 # INSTALL BASE SYSTEM 
 install_base(){
     clear
@@ -168,11 +186,10 @@ install_base(){
     pacstrap /mnt "${BASE_SYSTEM[@]}"
     echo && echo "Base system installed.  Press any key to continue..."; read empty
 
-    # GENERATE FSTAB
-    echo "Generating fstab..."
-    genfstab -U /mnt >> /mnt/etc/fstab
-    cat /mnt/etc/fstab
-    echo && echo "Here's your fstab. Type any key to continue..."; read empty
+    ## UPDATE mkinitrd HOOKS if using LVM
+    $(use_lvm) && arch-chroot /mnt pacman -S lvm2
+    $(use_lvm) && lvm_hooks
+    $(use_lvm) && lvm_modules
 }
 
 # GENERATE FSTAB 
@@ -247,6 +264,7 @@ install_essential(){
     arch-chroot /mnt systemctl enable systemd-homed
     echo && echo "Press any key to continue..."; read empty
 }
+
 
 # ADD USER ACCT
 add_user(){
