@@ -166,6 +166,7 @@ check_ready(){
     echo && echo "Date/Time service Status is . . . "
     timedatectl status
     sleep 4
+    read -p "Hit enter to continue..." empty
 }
 
 # PART OF LVM INSTALLATION
