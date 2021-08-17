@@ -141,6 +141,7 @@ prepare_vols(){
 
     # SHOW OUR WORK
     lsblk
+    read -p "Hit enter to continue..." empty
 }
 
 # CHECK FOR MIRRORLIST AND INTERNET CONN
