@@ -101,7 +101,7 @@ crypt_setup(){
     # FILL PART WITH ZEROS
     echo "filling encrypted drive with zeros..."
     dd if=/dev/zero of="${CRYPTVOL}" bs=1M    
-    cryptsetup luksClose "${CRYPTVOL}"                    
+    #cryptsetup luksClose "${CRYPTVOL}"                    
     echo "filling encrypted drive with random bits..."
     dd if=/dev/urandom of="${CRYPTVOL}" bs=512 count=20480     
 
