@@ -103,6 +103,7 @@ crypt_setup(){
     cryptsetup luksClose "${DRIVE}2"                    
     dd if=/dev/urandom of="${DRIVE}2" bs=512 count=20480     
     cryptsetup -v status "${DRIVE}2"    
+    read -p "Encryption Status: " empty
 }
 
 # PREPARE PHYSICAL AND LOGICAL VOLUMES AND MOUNT
