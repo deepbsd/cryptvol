@@ -104,6 +104,8 @@ crypt_setup(){
     cryptsetup luksClose "${DRIVE}2"                    
     echo "filling encrypted drive with random bits..."
     dd if=/dev/urandom of="${DRIVE}2" bs=512 count=20480     
+
+    # SHOW STATUS
     cryptsetup -v status "${DRIVE}2"    
     read -p "Encryption Status: " empty
 }
@@ -245,6 +247,13 @@ HOSTS
     echo "/etc/hosts . . ."
     cat /mnt/etc/hosts
     echo && echo "Here are /etc/hostname and /etc/hosts. Type any key to continue "; read empty
+}
+
+# LOAD LVM MODULE AT GRUB TIME
+grub_load(){
+    # Append grub default config
+    echo 'GRUB_PRELOAD_MODULES="lvm"' >> /mnt/etc/default/grub
+    echo 'GRUB_ENABLE_CRYPTTODISK=y' >> /mnt/etc/default/grub
 }
 
 # SET ROOT PASSWORD
