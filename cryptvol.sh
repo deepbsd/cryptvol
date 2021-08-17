@@ -103,10 +103,10 @@ crypt_setup(){
     dd if=/dev/zero of="${DRIVE}2" bs=1M    
     cryptsetup luksClose "${DRIVE}2"                    
     echo "filling encrypted drive with random bits..."
-    dd if=/dev/urandom of="${DRIVE}2" bs=512 count=20480     
+    dd if=/dev/urandom of="${CRYPTVOL}" bs=512 count=20480     
 
     # SHOW STATUS
-    cryptsetup -v status "${DRIVE}2"    
+    cryptsetup -v status "${CRYPTVOL}"    
     read -p "Encryption Status: " empty
 }
 
