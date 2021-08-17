@@ -106,8 +106,9 @@ crypt_setup(){
     dd if=/dev/urandom of="${CRYPTVOL}" bs=512 count=20480     
 
     # SHOW STATUS
+    echo "Encryption Status: " 
     cryptsetup -v status "${CRYPTVOL}"    
-    read -p "Encryption Status: " empty
+    read -p "Hit return to continue..." empty
 }
 
 # PREPARE PHYSICAL AND LOGICAL VOLUMES AND MOUNT
