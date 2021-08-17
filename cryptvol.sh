@@ -99,8 +99,10 @@ crypt_setup(){
     cryptsetup luksOpen  "${DRIVE}2" "$CRYPTVOL"  --key-file /tmp/passphrase
     
     # FILL PART WITH ZEROS
+    echo "filling encrypted drive with zeros..."
     dd if=/dev/zero of="${DRIVE}2" bs=1M    
     cryptsetup luksClose "${DRIVE}2"                    
+    echo "filling encrypted drive with random bits..."
     dd if=/dev/urandom of="${DRIVE}2" bs=512 count=20480     
     cryptsetup -v status "${DRIVE}2"    
     read -p "Encryption Status: " empty
