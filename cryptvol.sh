@@ -95,7 +95,9 @@ crypt_setup(){
 
 
     # SETUP ENCRYPTED VOLUME
-    cryptsetup -y -v luksFormat "${DRIVE}2" --key-file /tmp/passphrase
+    #cryptsetup -y -v luksFormat "${DRIVE}2" --key-file /tmp/passphrase
+    ###  Be sure to use luks1 format--compatable with GRUB
+    cryptsetup -y -v --type luks1 luksFormat "${DRIVE}2" --key-file /tmp/passphrase
     cryptsetup luksOpen  "${DRIVE}2" "$CRYPTVOL"  --key-file /tmp/passphrase
     
     # FILL PART WITH ZEROS
