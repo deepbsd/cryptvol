@@ -259,9 +259,9 @@ HOSTS
 grub_load(){
     # Append grub default config
     echo 'GRUB_PRELOAD_MODULES="lvm"' >> /mnt/etc/default/grub
-    echo 'GRUB_ENABLE_CRYPTTODISK=y' >> /mnt/etc/default/grub
+    echo 'GRUB_ENABLE_CRYPTODISK=y' >> /mnt/etc/default/grub
     myuuid=$( lsblk -f | grep "${CRYPTVOL}" | head -n1 | awk '{ print $5 }'  )
-    echo GRUB_CMDLINE_LINUX="cryptdevice=UUID=$myuuid:cryptdata" >> /mnt/etc/default/grub
+    echo -e GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=$myuuid:cryptdata\" >> /mnt/etc/default/grub
 }
 
 # SET ROOT PASSWORD
