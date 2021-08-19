@@ -172,7 +172,7 @@ check_ready(){
 # PART OF LVM INSTALLATION
 lvm_hooks(){
     clear
-    echo "adding lvm2 to mkinitcpio hooks HOOKS=( base udev ... block encrypt lvm2 filesystems )"
+    echo "adding encrypt and lvm2 to mkinitcpio hooks HOOKS=( base udev ... block encrypt lvm2 filesystems )"
     sleep 4
     # Also add encrypt
     sed -i 's/^HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)$/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /mnt/etc/mkinitcpio.conf
