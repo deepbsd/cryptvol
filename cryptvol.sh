@@ -335,9 +335,9 @@ check_ready
 install_base
 gen_fstab
 gen_tz_locale
-grub_load
 do_hostname
 set_root_pw
 install_essential
 add_user
+grub_load
 install_grub
