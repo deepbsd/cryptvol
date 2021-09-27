@@ -46,7 +46,7 @@ fi
 ##   SOFTWARE
 ##################
 
-BASE_SYSTEM=( base base-devel linux linux-headers linux-firmware dkms vim iwd )
+BASE_SYSTEM=( base base-devel linux linux-headers linux-firmware dkms vim iwd archlinux-keyring )
 
 devel_stuff=( git nodejs npm npm-check-updates ruby )
 printing_stuff=( system-config-printer foomatic-db foomatic-db-engine gutenprint cups cups-pdf cups-filters cups-pk-helper ghostscript gsfonts )
